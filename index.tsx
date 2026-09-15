@@ -5,12 +5,10 @@ import {
   CHAIRMAN_MODEL,
   COUNCIL_MODELS,
   runCouncil,
-  type AggregateRank,
   type CouncilUpdate,
-  type FinalResult,
-  type Stage1Result,
-  type Stage2Result,
+  type Turn,
 } from "./council"
+import { newTurnId, saveTurn } from "./storage"
 
 const C = {
   fg: "#c0caf5",
@@ -38,16 +36,6 @@ const STAGE_NAMES = ["Stage 1", "Stage 2", "Final"] as const
 
 function shortName(model: string) {
   return model.split("/")[1] ?? model
-}
-
-type Turn = {
-  question: string
-  stage1: Stage1Result[]
-  stage2: Stage2Result[]
-  labelToModel: Record<string, string>
-  aggregate: AggregateRank[]
-  final: FinalResult | null
-  error?: string
 }
 
 function labelFor(turn: Turn, model: string): string | null {
@@ -180,6 +168,7 @@ export function App() {
     (idx: number, patch: CouncilUpdate) => {
       turnsRef.current[idx] = { ...turnsRef.current[idx], ...patch } as Turn
       setTurns([...turnsRef.current])
+      const savedPath = saveTurn(turnsRef.current[idx])
       if (patch.stage1) {
         jumpTo(idx)
         setStage(0)
@@ -187,9 +176,14 @@ export function App() {
       if (patch.final) {
         jumpTo(idx)
         setStage(2)
+        setStatus(`Done. Saved to ${savedPath}`)
+        return
+      }
+      if (patch.error) {
+        setStatus(`${patch.error} (Saved to ${savedPath})`)
+        return
       }
       if (patch.status) setStatus(patch.status)
-      if (patch.error) setStatus(patch.error)
     },
     [jumpTo],
   )
@@ -201,6 +195,7 @@ export function App() {
     textareaRef.current?.setText("")
     const idx = turnsRef.current.length
     turnsRef.current.push({
+      id: newTurnId(text),
       question: text,
       stage1: [],
       stage2: [],

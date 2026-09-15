@@ -21,6 +21,17 @@ export type Stage2Result = { model: string; ranking: string; parsedRanking: stri
 export type AggregateRank = { model: string; averageRank: number; rankingsCount: number }
 export type FinalResult = { model: string; response: string }
 
+export type Turn = {
+  id: string
+  question: string
+  stage1: Stage1Result[]
+  stage2: Stage2Result[]
+  labelToModel: Record<string, string>
+  aggregate: AggregateRank[]
+  final: FinalResult | null
+  error?: string
+}
+
 export type CouncilUpdate = {
   stage1?: Stage1Result[]
   stage2?: Stage2Result[]

@@ -45,6 +45,12 @@ All settings live in `config.json`, next to the source (restart after editing):
 - `baseURL` can point at a proxy or local gateway instead of OpenRouter.
 - The API key stays in `.env` as `OPENROUTER_API_KEY` — never put it in `config.json`.
 
+## Persistence
+
+Every council run is saved to `data/<id>.json` — question, all three stages, parsed rankings and the
+aggregate. Written after each stage completes, so a crash mid-run still keeps partial results.
+Nothing is loaded at startup; the JSON files are the archive for reviewing past research.
+
 ## Tests
 
 ```bash
