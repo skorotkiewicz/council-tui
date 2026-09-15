@@ -1,6 +1,6 @@
 # LLM Council TUI
 
-Terminal rebuild of [llm-council](../llm-council): 3-stage deliberation where multiple
+Terminal rebuild of [LLM Council](https://github.com/karpathy/llm-council): 3-stage deliberation where multiple
 LLMs answer, rank each other anonymously, and a chairman synthesizes the final answer.
 No Python backend — the TUI calls OpenRouter directly.
 
