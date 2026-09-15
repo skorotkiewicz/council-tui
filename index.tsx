@@ -161,7 +161,7 @@ export function App() {
     if (saved.length) {
       turnsRef.current = saved
       setTurns(saved)
-      setStatus(`${saved.length} archived run(s) in data/. Ctrl+↓ for the latest, Ctrl+↑ to browse. Enter to ask.`)
+      setStatus(`${saved.length} archived run(s). Ctrl+↑ to browse. Enter to ask.`)
     }
   }, [])
 
@@ -223,8 +223,14 @@ export function App() {
     if (key.meta && key.name === "down") return void scrollRef.current?.scrollBy(5)
     if (key.ctrl && key.name === "left") setStage((s) => Math.max(0, s - 1))
     else if (key.ctrl && key.name === "right") setStage((s) => Math.min(STAGE_NAMES.length - 1, s + 1))
-    else if (key.ctrl && key.name === "up") jumpTo(Math.max(0, turnIdxRef.current - 1))
-    else if (key.ctrl && key.name === "down") jumpTo(Math.min(turnsRef.current.length - 1, turnIdxRef.current + 1))
+    else if (key.ctrl && key.name === "up") {
+      // From the welcome screen (-1), start browsing at the latest run.
+      jumpTo(turnIdxRef.current < 0 ? turnsRef.current.length - 1 : Math.max(0, turnIdxRef.current - 1))
+    } else if (key.ctrl && key.name === "down") {
+      // Newer run; past the newest, close back to the welcome screen.
+      const last = turnsRef.current.length - 1
+      jumpTo(turnIdxRef.current >= last ? -1 : turnIdxRef.current + 1)
+    }
   })
 
   const turn = turns[turnIdx]
