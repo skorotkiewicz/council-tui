@@ -5,6 +5,8 @@
 ![Tests](https://img.shields.io/badge/tests-8_passing-brightgreen)
 ![PRs](https://img.shields.io/badge/PRs-welcome-green)
 
+<img src="assets/screenshot.png" alt="Screenshot of the council TUI" width="80%">
+
 Terminal rebuild of [LLM Council](https://github.com/karpathy/llm-council): 3-stage deliberation where multiple
 LLMs answer, rank each other anonymously, and a chairman synthesizes the final answer.
 No Python backend — the TUI calls OpenRouter directly.
