@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { calculateAggregate, parseRankingFromText, type Stage2Result } from "./council"
+import { calculateAggregate, parseRankingFromText, type Stage2Result } from "../council"
 
 test("parseRankingFromText extracts the FINAL RANKING section", () => {
   const text = `Response A provides good detail on X but misses Y...

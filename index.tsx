@@ -309,6 +309,15 @@ export function App() {
 }
 
 if (import.meta.main) {
+  // Refuse to run an empty council - the app's only purpose is asking it.
+  if (!COUNCIL_MODELS.length || !CHAIRMAN_MODEL) {
+    console.error(
+      !COUNCIL_MODELS.length
+        ? "No council models configured. Pick any at https://openrouter.ai/models and add them to config.json."
+        : "No chairman model configured. Set chairmanModel in config.json.",
+    )
+    process.exit(1)
+  }
   const renderer = await createCliRenderer({ exitOnCtrlC: true })
   createRoot(renderer).render(<App />)
 }

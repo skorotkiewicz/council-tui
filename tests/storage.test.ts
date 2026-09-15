@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
-import type { Turn } from "./council"
-import { loadTurns, newTurnId, saveTurn } from "./storage"
+import type { Turn } from "../council"
+import { loadTurns, newTurnId, saveTurn } from "../storage"
 
 test("newTurnId is filesystem-safe and saveTurn writes readable JSON", () => {
   const id = newTurnId("What is 2+2? / test & stuff")

@@ -1,12 +1,24 @@
 // Core council logic, ported 1:1 from llm-council/backend (Python) to TypeScript.
 // No server: the TUI talks to OpenRouter via @ai-sdk/openai-compatible.
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import { generateText } from "ai"
-import config from "./config.json"
 
-// All user-editable settings live in config.json.
-export const COUNCIL_MODELS: string[] = config.councilModels
-export const CHAIRMAN_MODEL: string = config.chairmanModel
+// config.json (gitignored) holds all user-editable settings. Missing file =
+// unconfigured app; index.tsx refuses to start and explains what to do.
+const config = (() => {
+  try {
+    // Strip trailing commas just for convenience.
+    const raw = readFileSync(join(import.meta.dir, "config.json"), "utf8").replace(/,\s*([}\]])/g, "$1")
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+})() as { councilModels: string[]; chairmanModel: string; baseURL: string } | null
+
+export const COUNCIL_MODELS: string[] = (config?.councilModels ?? []).filter(Boolean)
+export const CHAIRMAN_MODEL: string = (config?.chairmanModel ?? "").trim()
 
 export type ChatMessage = {
   role: "user" | "system" | "assistant"
@@ -15,7 +27,7 @@ export type ChatMessage = {
 
 const openrouter = createOpenAICompatible({
   name: "openrouter",
-  baseURL: config.baseURL,
+  baseURL: config?.baseURL ?? "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
 })
 

@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test"
 import { testRender } from "@opentui/react/test-utils"
 import { act } from "react"
-import { App } from "./index"
+import { App } from "../index"
 
 test("renders the welcome screen", async () => {
   const setup = await act(() => testRender(<App />, { width: 100, height: 24 }))
