@@ -2,21 +2,17 @@
 // No server: the TUI talks to OpenRouter via @ai-sdk/openai-compatible.
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import { generateText } from "ai"
+import config from "./config.json"
 
-export const COUNCIL_MODELS = [
-  "openai/gpt-5.1",
-  "google/gemini-3-pro-preview",
-  "anthropic/claude-sonnet-4.5",
-  "x-ai/grok-4",
-]
-
-export const CHAIRMAN_MODEL = "google/gemini-3-pro-preview"
+// All user-editable settings live in config.json.
+export const COUNCIL_MODELS: string[] = config.councilModels
+export const CHAIRMAN_MODEL: string = config.chairmanModel
 
 export type ChatMessage = { role: "user" | "system" | "assistant"; content: string }
 
 const openrouter = createOpenAICompatible({
   name: "openrouter",
-  baseURL: "https://openrouter.ai/api/v1",
+  baseURL: config.baseURL,
   apiKey: process.env.OPENROUTER_API_KEY,
 })
 
