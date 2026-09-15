@@ -49,7 +49,8 @@ All settings live in `config.json`, next to the source (restart after editing):
 
 Every council run is saved to `data/<id>.json` — question, all three stages, parsed rankings and the
 aggregate. Written after each stage completes, so a crash mid-run still keeps partial results.
-Nothing is loaded at startup; the JSON files are the archive for reviewing past research.
+At startup the archive is read back in: browse saved runs with `Ctrl+↑/↓`, exactly like fresh ones.
+Archived runs are view-only; asking a new question appends a new run.
 
 ## Tests
 

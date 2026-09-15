@@ -8,7 +8,7 @@ import {
   type CouncilUpdate,
   type Turn,
 } from "./council"
-import { newTurnId, saveTurn } from "./storage"
+import { loadTurns, newTurnId, saveTurn } from "./storage"
 
 const C = {
   fg: "#c0caf5",
@@ -157,6 +157,12 @@ export function App() {
 
   useEffect(() => {
     textareaRef.current?.focus()
+    const saved = loadTurns()
+    if (saved.length) {
+      turnsRef.current = saved
+      setTurns(saved)
+      setStatus(`${saved.length} archived run(s) in data/. Ctrl+↓ for the latest, Ctrl+↑ to browse. Enter to ask.`)
+    }
   }, [])
 
   const jumpTo = useCallback((idx: number) => {
