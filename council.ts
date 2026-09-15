@@ -1,5 +1,7 @@
 // Core council logic, ported 1:1 from llm-council/backend (Python) to TypeScript.
-// No server: the TUI calls OpenRouter directly with fetch.
+// No server: the TUI talks to OpenRouter via @ai-sdk/openai-compatible.
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
+import { generateText } from "ai"
 
 export const COUNCIL_MODELS = [
   "openai/gpt-5.1",
@@ -10,9 +12,13 @@ export const COUNCIL_MODELS = [
 
 export const CHAIRMAN_MODEL = "google/gemini-3-pro-preview"
 
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+export type ChatMessage = { role: "user" | "system" | "assistant"; content: string }
 
-export type ChatMessage = { role: string; content: string }
+const openrouter = createOpenAICompatible({
+  name: "openrouter",
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+})
 
 export type Stage1Result = { model: string; response: string }
 export type Stage2Result = { model: string; ranking: string; parsedRanking: string[] }
@@ -31,18 +37,12 @@ export type CouncilUpdate = {
 
 async function queryModel(model: string, messages: ChatMessage[], timeoutMs = 120_000): Promise<string | null> {
   try {
-    const res = await fetch(OPENROUTER_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ model, messages }),
-      signal: AbortSignal.timeout(timeoutMs),
+    const { text } = await generateText({
+      model: openrouter(model),
+      messages,
+      abortSignal: AbortSignal.timeout(timeoutMs),
     })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const data = await res.json()
-    return data.choices?.[0]?.message?.content ?? ""
+    return text
   } catch {
     // Graceful degradation, same as the Python backend: a failed model drops out.
     return null
