@@ -15,6 +15,7 @@ No Python backend — the TUI calls OpenRouter directly.
 
 ```bash
 bun install
+cp config.json.example config.json
 echo 'OPENROUTER_API_KEY=sk-...' > .env   # bun auto-loads .env
 bun start
 ```
