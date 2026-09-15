@@ -1,5 +1,10 @@
 # LLM Council TUI
 
+![Bun](https://img.shields.io/badge/runtime-bun-black?logo=bun)
+![OpenTUI](https://img.shields.io/badge/built_on-OpenTUI-7dcfff)
+![Tests](https://img.shields.io/badge/tests-8_passing-brightgreen)
+![PRs](https://img.shields.io/badge/PRs-welcome-green)
+
 Terminal rebuild of [LLM Council](https://github.com/karpathy/llm-council): 3-stage deliberation where multiple
 LLMs answer, rank each other anonymously, and a chairman synthesizes the final answer.
 No Python backend — the TUI calls OpenRouter directly.

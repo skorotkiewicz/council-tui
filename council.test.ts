@@ -23,11 +23,27 @@ test("parseRankingFromText returns empty for no ranking at all", () => {
 })
 
 test("calculateAggregate averages ranks per model and sorts best first", () => {
-  const labelToModel = { "Response A": "m1", "Response B": "m2", "Response C": "m3" }
+  const labelToModel = {
+    "Response A": "m1",
+    "Response B": "m2",
+    "Response C": "m3",
+  }
   const stage2: Stage2Result[] = [
-    { model: "m1", ranking: "", parsedRanking: ["Response C", "Response A", "Response B"] },
-    { model: "m2", ranking: "", parsedRanking: ["Response C", "Response B", "Response A"] },
-    { model: "m3", ranking: "", parsedRanking: ["Response A", "Response C", "Response B"] },
+    {
+      model: "m1",
+      ranking: "",
+      parsedRanking: ["Response C", "Response A", "Response B"],
+    },
+    {
+      model: "m2",
+      ranking: "",
+      parsedRanking: ["Response C", "Response B", "Response A"],
+    },
+    {
+      model: "m3",
+      ranking: "",
+      parsedRanking: ["Response A", "Response C", "Response B"],
+    },
   ]
   // A: (2+3+1)/3 = 2.0, B: (3+2+3)/3 = 2.67, C: (1+1+2)/3 = 1.33
   expect(calculateAggregate(stage2, labelToModel)).toEqual([

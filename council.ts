@@ -8,7 +8,10 @@ import config from "./config.json"
 export const COUNCIL_MODELS: string[] = config.councilModels
 export const CHAIRMAN_MODEL: string = config.chairmanModel
 
-export type ChatMessage = { role: "user" | "system" | "assistant"; content: string }
+export type ChatMessage = {
+  role: "user" | "system" | "assistant"
+  content: string
+}
 
 const openrouter = createOpenAICompatible({
   name: "openrouter",
@@ -17,8 +20,16 @@ const openrouter = createOpenAICompatible({
 })
 
 export type Stage1Result = { model: string; response: string }
-export type Stage2Result = { model: string; ranking: string; parsedRanking: string[] }
-export type AggregateRank = { model: string; averageRank: number; rankingsCount: number }
+export type Stage2Result = {
+  model: string
+  ranking: string
+  parsedRanking: string[]
+}
+export type AggregateRank = {
+  model: string
+  averageRank: number
+  rankingsCount: number
+}
 export type FinalResult = { model: string; response: string }
 
 export type Turn = {
@@ -62,7 +73,9 @@ function queryModelsParallel(models: string[], messages: ChatMessage[]) {
 
 export async function stage1CollectResponses(userQuery: string): Promise<Stage1Result[]> {
   const responses = await queryModelsParallel(COUNCIL_MODELS, [{ role: "user", content: userQuery }])
-  return COUNCIL_MODELS.flatMap((model, i) => (responses[i] === null ? [] : [{ model, response: responses[i] as string }]))
+  return COUNCIL_MODELS.flatMap((model, i) =>
+    responses[i] === null ? [] : [{ model, response: responses[i] as string }],
+  )
 }
 
 export async function stage2CollectResponses(
@@ -110,7 +123,15 @@ Now provide your evaluation and ranking:`
   const responses = await queryModelsParallel(COUNCIL_MODELS, [{ role: "user", content: rankingPrompt }])
 
   const stage2 = COUNCIL_MODELS.flatMap((model, i) =>
-    responses[i] === null ? [] : [{ model, ranking: responses[i] as string, parsedRanking: parseRankingFromText(responses[i] as string) }],
+    responses[i] === null
+      ? []
+      : [
+          {
+            model,
+            ranking: responses[i] as string,
+            parsedRanking: parseRankingFromText(responses[i] as string),
+          },
+        ],
   )
 
   return [stage2, labelToModel]
@@ -155,7 +176,7 @@ export function parseRankingFromText(text: string): string[] {
   const section = idx >= 0 ? text.slice(idx + marker.length) : text
 
   const numbered = section.match(/\d+\.\s*Response [A-Z]/g)
-  if (numbered) return numbered.map((m) => m.match(/Response [A-Z]/)![0])
+  if (numbered) return numbered.flatMap((m) => m.match(/Response [A-Z]/) ?? [])
 
   // Fallback: any "Response X" patterns in order.
   return section.match(/Response [A-Z]/g) ?? []
@@ -184,11 +205,15 @@ export function calculateAggregate(stage2: Stage2Result[], labelToModel: Record<
 }
 
 export async function runCouncil(query: string, onProgress: (update: CouncilUpdate) => void): Promise<void> {
-  onProgress({ status: `Stage 1: querying ${COUNCIL_MODELS.length} models in parallel...` })
+  onProgress({
+    status: `Stage 1: querying ${COUNCIL_MODELS.length} models in parallel...`,
+  })
 
   const stage1 = await stage1CollectResponses(query)
   if (!stage1.length) {
-    onProgress({ error: "All models failed to respond. Check OPENROUTER_API_KEY and model IDs." })
+    onProgress({
+      error: "All models failed to respond. Check OPENROUTER_API_KEY and model IDs.",
+    })
     return
   }
   onProgress({

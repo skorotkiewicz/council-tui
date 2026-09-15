@@ -1,5 +1,5 @@
 import { afterAll, expect, test } from "bun:test"
-import { runCouncil, type CouncilUpdate } from "./council"
+import { type CouncilUpdate, runCouncil } from "./council"
 
 // Stub OpenRouter with canned responses, one per model call.
 // Council models get stage1 answers, then stage2 rankings; the chairman (called
@@ -10,7 +10,8 @@ const CANNED = [
   { content: "Answer from model 3" },
   { content: "Answer from model 4" },
   {
-    content: "Response C is fine.\nResponse D is weak.\n\nFINAL RANKING:\n1. Response B\n2. Response A\n3. Response C\n4. Response D",
+    content:
+      "Response C is fine.\nResponse D is weak.\n\nFINAL RANKING:\n1. Response B\n2. Response A\n3. Response C\n4. Response D",
   },
   {
     content: "FINAL RANKING:\n1. Response A\n2. Response B\n3. Response C\n4. Response D",
@@ -55,7 +56,11 @@ test("runCouncil emits stage1, stage2 + aggregate, then final", async () => {
   // A: (2+1+1+2)/4=1.5, B: (1+2+3+1)/4=1.75, C: (3+3+2+4)/4=3, D: (4+4+4+3)/4=3.75
   expect(events[2].aggregate).toEqual([
     { model: "openai/gpt-5.1", averageRank: 1.5, rankingsCount: 4 },
-    { model: "google/gemini-3-pro-preview", averageRank: 1.75, rankingsCount: 4 },
+    {
+      model: "google/gemini-3-pro-preview",
+      averageRank: 1.75,
+      rankingsCount: 4,
+    },
     { model: "anthropic/claude-sonnet-4.5", averageRank: 3, rankingsCount: 4 },
     { model: "x-ai/grok-4", averageRank: 3.75, rankingsCount: 4 },
   ])

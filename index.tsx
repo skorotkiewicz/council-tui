@@ -1,13 +1,14 @@
-import { createCliRenderer, RGBA, ScrollBoxRenderable, SyntaxStyle, TextareaRenderable, type Renderable } from "@opentui/core"
-import { createRoot, useKeyboard } from "@opentui/react"
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import {
-  CHAIRMAN_MODEL,
-  COUNCIL_MODELS,
-  runCouncil,
-  type CouncilUpdate,
-  type Turn,
-} from "./council"
+  createCliRenderer,
+  type Renderable,
+  RGBA,
+  type ScrollBoxRenderable,
+  SyntaxStyle,
+  type TextareaRenderable,
+} from "@opentui/core"
+import { createRoot, useKeyboard } from "@opentui/react"
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
+import { CHAIRMAN_MODEL, COUNCIL_MODELS, type CouncilUpdate, runCouncil, type Turn } from "./council"
 import { loadTurns, newTurnId, saveTurn } from "./storage"
 
 const C = {
@@ -79,11 +80,12 @@ function TurnView({ turn, stage }: { turn: Turn; stage: number }) {
         <span style={{ fg: C.fg }}>{turn.question}</span>
       </text>
 
-      {stage === 0 && turn.stage1.map((s) => (
-        <Section key={s.model} title={shortName(s.model)}>
-          <markdown content={s.response} syntaxStyle={syntaxStyle} />
-        </Section>
-      ))}
+      {stage === 0 &&
+        turn.stage1.map((s) => (
+          <Section key={s.model} title={shortName(s.model)}>
+            <markdown content={s.response} syntaxStyle={syntaxStyle} />
+          </Section>
+        ))}
 
       {stage === 1 && (
         <box flexDirection="column" width="100%">
@@ -108,20 +110,23 @@ function TurnView({ turn, stage }: { turn: Turn; stage: number }) {
               <text key={a.model}>
                 <span style={{ fg: C.yellow }}>{`${i + 1}. `}</span>
                 <span style={{ fg: C.fg }}>{shortName(a.model)}</span>
-                <span style={{ fg: C.dim }}>{`  avg ${a.averageRank.toFixed(2)}  (${a.rankingsCount} vote${a.rankingsCount === 1 ? "" : "s"})`}</span>
+                <span
+                  style={{ fg: C.dim }}
+                >{`  avg ${a.averageRank.toFixed(2)}  (${a.rankingsCount} vote${a.rankingsCount === 1 ? "" : "s"})`}</span>
               </text>
             ))}
           </Section>
         </box>
       )}
 
-      {stage === 2 && (turn.final ? (
-        <Section title={`${shortName(turn.final.model)} (chairman)`}>
-          <markdown content={turn.final.response} syntaxStyle={syntaxStyle} />
-        </Section>
-      ) : (
-        <text fg={C.dim}>Waiting for chairman...</text>
-      ))}
+      {stage === 2 &&
+        (turn.final ? (
+          <Section title={`${shortName(turn.final.model)} (chairman)`}>
+            <markdown content={turn.final.response} syntaxStyle={syntaxStyle} />
+          </Section>
+        ) : (
+          <text fg={C.dim}>Waiting for chairman...</text>
+        ))}
     </box>
   )
 }
@@ -135,7 +140,9 @@ function Welcome() {
   return (
     <box flexDirection="column" paddingLeft={1} paddingTop={1} width="100%">
       <text fg={C.fg}>LLM Council TUI</text>
-      <text fg={C.dim}>{`${COUNCIL_MODELS.map(shortName).join(" · ")}  |  chairman: ${shortName(CHAIRMAN_MODEL)}`}</text>
+      <text
+        fg={C.dim}
+      >{`${COUNCIL_MODELS.map(shortName).join(" · ")}  |  chairman: ${shortName(CHAIRMAN_MODEL)}`}</text>
       <text fg={C.dim}>{"Ask a question below (Enter to send). Stage 1 collects individual answers,"}</text>
       <text fg={C.dim}>{"Stage 2 has every model rank anonymized peers, Stage 3 the chairman synthesizes."}</text>
     </box>
@@ -240,7 +247,9 @@ export function App() {
       <box height={1} paddingLeft={1}>
         <text>
           <b style={{ fg: C.green }}>LLM Council</b>
-          <span style={{ fg: C.dim }}>{`  ${COUNCIL_MODELS.map(shortName).join(" · ")}  |  chairman: ${shortName(CHAIRMAN_MODEL)}`}</span>
+          <span
+            style={{ fg: C.dim }}
+          >{`  ${COUNCIL_MODELS.map(shortName).join(" · ")}  |  chairman: ${shortName(CHAIRMAN_MODEL)}`}</span>
         </text>
       </box>
 
