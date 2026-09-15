@@ -16,8 +16,8 @@ bun start
 
 | Key          | Action                  |
 | ------------ | ----------------------- |
-| `Ctrl+Enter` | Send question           |
-| `Enter`      | Newline in input        |
+| `Enter`      | Send question           |
+| `Shift+Enter` | Newline in input       |
 | `Ctrl+←/→`   | Switch stage tab        |
 | `Ctrl+↑/↓`   | Switch turn             |
 | `Alt+↑/↓`    | Scroll content          |

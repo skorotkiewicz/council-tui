@@ -198,5 +198,5 @@ export async function runCouncil(query: string, onProgress: (update: CouncilUpda
   })
 
   const final = await stage3Synthesize(query, stage1, stage2)
-  onProgress({ final, status: "Done. Ctrl+Enter to ask again." })
+  onProgress({ final, status: "Done. Enter to ask again." })
 }

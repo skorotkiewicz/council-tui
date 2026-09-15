@@ -148,7 +148,7 @@ function Welcome() {
     <box flexDirection="column" paddingLeft={1} paddingTop={1} width="100%">
       <text fg={C.fg}>LLM Council TUI</text>
       <text fg={C.dim}>{`${COUNCIL_MODELS.map(shortName).join(" · ")}  |  chairman: ${shortName(CHAIRMAN_MODEL)}`}</text>
-      <text fg={C.dim}>{"Ask a question below (Ctrl+Enter to send). Stage 1 collects individual answers,"}</text>
+      <text fg={C.dim}>{"Ask a question below (Enter to send). Stage 1 collects individual answers,"}</text>
       <text fg={C.dim}>{"Stage 2 has every model rank anonymized peers, Stage 3 the chairman synthesizes."}</text>
     </box>
   )
@@ -161,7 +161,7 @@ export function App() {
   const turnIdxRef = useRef(-1)
   const [stage, setStage] = useState(0)
   const [status, setStatus] = useState(
-    process.env.OPENROUTER_API_KEY ? "Ready. Ctrl+Enter to ask." : "Set OPENROUTER_API_KEY (.env is auto-loaded by bun).",
+    process.env.OPENROUTER_API_KEY ? "Ready. Enter to ask." : "Set OPENROUTER_API_KEY (.env is auto-loaded by bun).",
   )
   const runningRef = useRef(false)
   const textareaRef = useRef<TextareaRenderable | null>(null)
@@ -261,21 +261,28 @@ export function App() {
           }}
           width="100%"
           height="100%"
-          placeholder="Ask the council... (Enter for newline, Ctrl+Enter to send)"
+          placeholder="Ask the council... (Enter to send, Shift+Enter for newline)"
           placeholderColor={C.dim}
           focusedBackgroundColor="#1a1b26"
           textColor={C.fg}
           focusedTextColor={C.fg}
           cursorColor={C.accent}
           wrapMode="word"
-          keyBindings={[{ name: "return", ctrl: true, action: "submit" }]}
+          keyBindings={[
+            { name: "return", action: "submit" },
+            { name: "return", shift: true, action: "newline" },
+            { name: "return", ctrl: true, action: "submit" },
+            { name: "kpenter", action: "submit" },
+            { name: "kpenter", shift: true, action: "newline" },
+            { name: "linefeed", action: "newline" },
+          ]}
           onSubmit={send}
         />
       </box>
 
       <box height={1} paddingLeft={1}>
         <text fg={C.dim}>
-          Ctrl+Enter send · Ctrl+←→ stage · Ctrl+↑↓ turn · Alt+↑↓ scroll · Ctrl+C quit
+          Enter send · Shift+Enter newline · Ctrl+←→ stage · Ctrl+↑↓ turn · Alt+↑↓ scroll · Ctrl+C quit
         </text>
       </box>
       <box height={1} paddingLeft={1}>
